@@ -69,7 +69,8 @@ public class VideoStreamer {
             if (bytes.length - end_position < 65507) {
                 start_position += 65507;
                 end_position = bytes.length;
-                continue;
+                list.add(Arrays.copyOfRange(bytes, start_position, end_position));
+               break;
             }
             start_position += 65507;
             end_position += 65507;
