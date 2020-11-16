@@ -29,7 +29,6 @@ public class VideoClient {
             InetAddress inetAddress = InetAddress.getByName(VideoStreamer.MULTICAST_ADR);
             videoClient.joinGroup(new InetSocketAddress(inetAddress, VideoStreamer.PORT), NetworkInterface.getByIndex(0));
 
-            ArrayList<byte[]> list = new ArrayList<>();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             for (int i = 0; i < 10; i++) {
                 byte[] buff = new byte[65507];
@@ -37,22 +36,14 @@ public class VideoClient {
                 videoClient.receive(packet);
                 outputStream.write(buff);
                 if (packet.getLength() < 65507) {
+                    outputStream.close();
                     break;
                 }
             }
             byte[] imgBuff = outputStream.toByteArray();
-            try {
-
-                InputStream in = new ByteArrayInputStream(imgBuff);
-                BufferedImage bImageFromConvert = ImageIO.read(in);
-                ImageIO.write(bImageFromConvert, "jpg", new File(
-                        "screenshot.jpg"));
-            } catch (Exception e){
-
-            }
 
 
-            ImageIcon icon = new ImageIcon("screenshot.jpg");
+            ImageIcon icon = new ImageIcon(imgBuff);
             int h = icon.getIconHeight();
             int w = icon.getIconWidth();
             float scale = (float) WIDTH / w; // масштабируем
